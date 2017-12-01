@@ -64,7 +64,7 @@ mod tests {
 
     #[test]
     fn test_run_a() {
-        assert_eq!(3, run_a("1122").unwrap());
+        assert_eq!(3, run_a("1122").unwrap()); // As of today, Failure does not implement PartialEq
         assert_eq!(4, run_a("1111").unwrap());
         assert_eq!(0, run_a("1234").unwrap());
         assert_eq!(9, run_a("91212129").unwrap());
