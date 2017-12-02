@@ -2,15 +2,28 @@
 extern crate failure;
 
 use failure::{err_msg, Error};
+use std::fs::File;
+use std::io::Read;
 use std::string::String;
 
 fn main() {
-    if let Some(input) = std::env::args().nth(1) {
-        println!("a: {:?}", run_a(&input));
-        println!("b: {:?}", run_b(&input));
-    } else {
-        eprintln!("provide input")
+    if let Err(ref err) = run() {
+        eprintln!("error: {:?}", err);
+        eprintln!("bactrace: {:?}", err.backtrace());
+        ::std::process::exit(1);
     }
+}
+
+fn run() -> Result<(), Error> {
+    let mut file = File::open("input/day1.txt")?;
+    let mut input = String::new();
+    file.read_to_string(&mut input)?;
+    input.pop();
+
+    println!("a: {:?}", run_a(&input));
+    println!("b: {:?}", run_b(&input));
+
+    Ok(())
 }
 
 fn run_a(input: &str) -> Result<u32, Error> {

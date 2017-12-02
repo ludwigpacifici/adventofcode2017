@@ -9,5 +9,5 @@ http://adventofcode.com/2017/day/<N>
 And a solution in Rust, can be computed via:
 
 ```bash
-$ cargo run --bin day<N> [-- <input>]
+$ cargo run --bin day<N>
 ```
