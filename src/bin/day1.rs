@@ -68,7 +68,7 @@ fn captcha_sum(data: &str, shift: usize) -> u32 {
         .zip(data[shift..].chars())
         .filter(|pair| pair.0 == pair.1)
         .filter_map(|pair| pair.0.to_digit(10))
-        .fold(0, |acc, val| acc + val)
+        .sum()
 }
 
 #[cfg(test)]
