@@ -25,20 +25,11 @@ fn run() -> Result<(), Error> {
 }
 
 fn run_a(input: &str) -> u32 {
-    captcha_sum_next(input)
+    captcha_sum(input, 1)
 }
 
 fn run_b(input: &str) -> u32 {
-    captcha_sum_middle(input)
-}
-
-fn captcha_sum_next(data: &str) -> u32 {
-    captcha_sum(data, 1)
-}
-
-fn captcha_sum_middle(data: &str) -> u32 {
-    let middle = data.len() / 2;
-    captcha_sum(data, middle)
+    captcha_sum(input, input.len() / 2)
 }
 
 fn captcha_sum(data: &str, shift: usize) -> u32 {
