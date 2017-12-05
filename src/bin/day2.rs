@@ -25,7 +25,7 @@ fn run() -> Result<(), Error> {
 }
 
 fn run_a(input: &str) -> u32 {
-    let logic = |vals: Vec<u32>| -> u32 {
+    let logic = |vals: Vec<u32>| {
         let min = *vals.iter().min().unwrap_or(&0u32);
         let max = *vals.iter().max().unwrap_or(&0u32);
         max - min
@@ -35,7 +35,7 @@ fn run_a(input: &str) -> u32 {
 }
 
 fn run_b(input: &str) -> u32 {
-    let logic = |vals: Vec<u32>| -> u32 {
+    let logic = |vals: Vec<u32>| {
         for x in 0..vals.len() {
             for y in 0..vals.len() {
                 if x != y && vals[y] != 0 && vals[x] % vals[y] == 0 {
@@ -55,8 +55,8 @@ fn checksum(input: &str, logic: fn(Vec<u32>) -> u32) -> u32 {
         .lines()
         .map(|l| {
             l.split_whitespace()
-                .filter_map(|i| i.parse::<u32>().ok())
-                .collect::<Vec<u32>>()
+                .filter_map(|i| i.parse().ok())
+                .collect()
         })
         .map(logic)
         .sum()
