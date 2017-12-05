@@ -35,7 +35,7 @@ fn run_a(input: &str) -> usize {
         }
     };
 
-    passphrase_checker(input, &logic)
+    passphrase_checker(input, logic)
 }
 
 fn run_b(input: &str) -> usize {
@@ -53,10 +53,10 @@ fn run_b(input: &str) -> usize {
         }
     };
 
-    passphrase_checker(input, &logic)
+    passphrase_checker(input, logic)
 }
 
-fn passphrase_checker(input: &str, logic: &Fn(&str) -> Option<()>) -> usize {
+fn passphrase_checker(input: &str, logic: fn(&str) -> Option<()>) -> usize {
     input.lines().filter_map(logic).count()
 }
 

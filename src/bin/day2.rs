@@ -31,7 +31,7 @@ fn run_a(input: &str) -> u32 {
         max - min
     };
 
-    checksum(input, &logic)
+    checksum(input, logic)
 }
 
 fn run_b(input: &str) -> u32 {
@@ -47,10 +47,10 @@ fn run_b(input: &str) -> u32 {
         unreachable!();
     };
 
-    checksum(input, &logic)
+    checksum(input, logic)
 }
 
-fn checksum(input: &str, logic: &Fn(Vec<u32>) -> u32) -> u32 {
+fn checksum(input: &str, logic: fn(Vec<u32>) -> u32) -> u32 {
     input
         .lines()
         .map(|l| {
