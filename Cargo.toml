@@ -4,4 +4,6 @@ version = "0.1.0"
 authors = ["Ludwig PACIFICI <ludwig@lud.cc>"]
 
 [dependencies]
-failure="*"
+failure = "*"
+lazy_static = "*"
+regex = "*"
