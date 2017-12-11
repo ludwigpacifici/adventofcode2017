@@ -33,12 +33,12 @@ fn run() -> Result<(), Error> {
 }
 
 fn run_a(tree: &Towers) -> Option<&str> {
-    root(&tree)
+    root(tree)
 }
 
 fn run_b(tree: &Towers) -> Option<u32> {
-    if let Some(root) = root(&tree) {
-        populate_all_energy(&tree, &root)
+    if let Some(root) = root(tree) {
+        populate_all_energy(tree, root)
     } else {
         None
     }
@@ -49,7 +49,6 @@ fn root(tree: &Towers) -> Option<&str> {
         .find(|&(_, value)| value.parent.is_empty())
         .map(|(name, _)| name.as_str())
 }
-
 
 macro_rules! distance {
     ($x:expr, $y:expr) => (
@@ -77,7 +76,6 @@ fn populate_all_energy<'a>(tree: &Towers, root: &'a str) -> Option<u32> {
                 .iter()
                 .map(|t| *accumulated_energy.entry(t).or_insert(0))
                 .collect::<Vec<u32>>();
-            let is_equilibrium = children.iter().all(|e| *e == children[0]);
             let unbalanced = children.iter().find(|e| *e != &children[0]);
             let children_energy = children.iter().sum::<u32>();
 
@@ -86,7 +84,7 @@ fn populate_all_energy<'a>(tree: &Towers, root: &'a str) -> Option<u32> {
                 accumulated_energy.insert(name, tower.energy + children_energy);
                 stack.pop();
             } else if unbalanced.is_none() && children_energy == 0 {
-                tower.sub_towers.iter().for_each(|t| stack.push(&t));
+                tower.sub_towers.iter().for_each(|t| stack.push(t));
             } else {
                 return Some(distance!(*unbalanced.unwrap(), children[0]));
             }
