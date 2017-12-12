@@ -29,11 +29,11 @@ fn run() -> Result<(), Error> {
 }
 
 fn run_a(input: &str) -> Option<usize> {
-    walk_hex_grid(&input).iter().last().cloned()
+    walk_hex_grid(input).iter().last().cloned()
 }
 
 fn run_b(input: &str) -> Option<usize> {
-    walk_hex_grid(&input).iter().max().cloned()
+    walk_hex_grid(input).iter().max().cloned()
 }
 
 fn walk_hex_grid(input: &str) -> Vec<usize> {
@@ -73,13 +73,13 @@ fn distance(simplified_path: &HashMap<&str, usize>) -> usize {
         .map(|key| simplified_path[key])
         .collect();
 
-    match all_directions.as_slice() {
-        &[a, b, c, 0, 0, 0] => a.max(c) + b,
-        &[0, a, b, c, 0, 0] => a.max(c) + b,
-        &[0, 0, a, b, c, 0] => a.max(c) + b,
-        &[0, 0, 0, a, b, c] => a.max(c) + b,
-        &[c, 0, 0, 0, a, b] => a.max(c) + b,
-        &[b, c, 0, 0, 0, a] => a.max(c) + b,
+    match *all_directions.as_slice() {
+        [a, b, c, 0, 0, 0]
+        | [0, a, b, c, 0, 0]
+        | [0, 0, a, b, c, 0]
+        | [0, 0, 0, a, b, c]
+        | [c, 0, 0, 0, a, b]
+        | [b, c, 0, 0, 0, a] => a.max(c) + b,
         _ => 0,
     }
 }
