@@ -16,13 +16,14 @@ pub fn knot_hash_partial(input: &[usize], list_size: usize, rounds: usize) -> Ve
     list
 }
 
-pub fn knot_hash(input: &str, list_size: usize) -> String {
+pub fn knot_hash(input: &str) -> String {
     let input: Vec<_> = input
         .bytes()
         .map(usize::from)
         .chain(vec![17, 31, 73, 47, 23].into_iter())
         .collect();
 
+    let list_size = 256;
     knot_hash_partial(&input, list_size, 64)
         .chunks(16)
         .map(|chunk| chunk.iter().fold(0, |acc, n| acc ^ n))

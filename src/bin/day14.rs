@@ -34,7 +34,7 @@ fn run_a(input: &str, disk_size: usize) -> u32 {
 
     for i in 0..disk_size {
         let input = format!("{}-{}", input, i);
-        used_count += knot_hash(&input, 256)
+        used_count += knot_hash(&input)
             .to_ascii_lowercase()
             .chars()
             .map(|c| match c {
@@ -126,7 +126,7 @@ fn make_disk(input: &str, disk_size: usize) -> Vec<Vec<char>> {
 
     for i in 0..disk_size {
         let input = format!("{}-{}", input, i);
-        let binary: String = knot_hash(&input, 256)
+        let binary: String = knot_hash(&input)
             .to_ascii_lowercase()
             .chars()
             .filter_map(|c| {

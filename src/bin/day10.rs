@@ -22,7 +22,7 @@ fn run() -> Result<(), Error> {
     input.pop();
 
     println!("a: {:?}", run_a(&input, 256));
-    println!("b: {:?}", run_b(&input, 256));
+    println!("b: {:?}", run_b(&input));
 
     Ok(())
 }
@@ -39,8 +39,8 @@ fn run_a(input: &str, list_size: usize) -> usize {
         .product()
 }
 
-fn run_b(input: &str, list_size: usize) -> String {
-    knot_hash(input, list_size)
+fn run_b(input: &str) -> String {
+    knot_hash(input)
 }
 
 #[cfg(test)]
@@ -58,9 +58,9 @@ mod tests {
 
     #[test]
     fn test_run_b() {
-        assert_eq!("a2582a3a0e66e6e86e3812dcb672a272", run_b("", 256));
-        assert_eq!("33efeb34ea91902bb2f59c9920caa6cd", run_b("AoC 2017", 256));
-        assert_eq!("3efbe78a8d82f29979031a4aa0b16a9d", run_b("1,2,3", 256));
-        assert_eq!("63960835bcdc130f0b66d7ff4f6a5a8e", run_b("1,2,4", 256));
+        assert_eq!("a2582a3a0e66e6e86e3812dcb672a272", run_b(""));
+        assert_eq!("33efeb34ea91902bb2f59c9920caa6cd", run_b("AoC 2017"));
+        assert_eq!("3efbe78a8d82f29979031a4aa0b16a9d", run_b("1,2,3"));
+        assert_eq!("63960835bcdc130f0b66d7ff4f6a5a8e", run_b("1,2,4"));
     }
 }
