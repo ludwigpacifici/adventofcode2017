@@ -32,34 +32,34 @@ fn run() -> Result<(), Error> {
     Ok(())
 }
 
-fn run_a(input: &str, seed: &Vec<u8>) -> Vec<u8> {
+fn run_a(input: &str, seed: &[u8]) -> Vec<u8> {
     dance(input, seed)
 }
 
-fn run_b(input: &str, seed: &Vec<u8>, iterations: usize) -> Vec<u8> {
-    let mut programs = seed.clone();
+fn run_b(input: &str, seed: &[u8], iterations: usize) -> Vec<u8> {
+    let mut programs = Vec::from(seed);
 
     let mut cycle_count = 1;
-    programs = run_a(input, &mut programs);
+    programs = dance(input, &programs);
 
-    while *seed != programs && cycle_count < iterations {
-        programs = run_a(input, &mut programs);
+    while seed != &programs[..] && cycle_count < iterations {
+        programs = dance(input, &programs);
         cycle_count += 1;
     }
 
-    if *seed != programs {
+    if seed != &programs[..] {
         return programs;
     }
 
     for _ in 0..(iterations % cycle_count) {
-        programs = run_a(input, &mut programs);
+        programs = dance(input, &programs);
     }
 
     programs
 }
 
-fn dance(input: &str, seed: &Vec<u8>) -> Vec<u8> {
-    let mut programs = seed.clone();
+fn dance(input: &str, seed: &[u8]) -> Vec<u8> {
+    let mut programs = Vec::from(seed);
 
     for op in input.split(',') {
         match op.as_bytes()[0] {

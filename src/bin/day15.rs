@@ -48,20 +48,8 @@ fn run() -> Result<(), Error> {
     Ok(())
 }
 
-fn run_a(input: &str, factor_a: u64, factor_b: u64, product: u64, pairs_count: u64) -> u64 {
-    let (mut a, mut b) = parse_seeds(input);
-    let mut count = 0;
-    let lowest_16_bits = 0b1111_1111_1111_1111;
-    (0..pairs_count).for_each(|_| {
-        a = generator_next(a, factor_a, product, 1);
-        b = generator_next(b, factor_b, product, 1);
-
-        if generator_match(a, b, lowest_16_bits) {
-            count += 1;
-        }
-    });
-
-    count
+fn run_a(input: &str, factor_a: u64, factor_b: u64, product: u64, pairs_count: u64) -> usize {
+    judge_final_count(input, factor_a, factor_b, 1, 1, product, pairs_count)
 }
 
 fn run_b(
@@ -72,20 +60,16 @@ fn run_b(
     multiple_b: u64,
     product: u64,
     pairs_count: u64,
-) -> u64 {
-    let (mut a, mut b) = parse_seeds(input);
-    let mut count = 0;
-    let lowest_16_bits = 0b1111_1111_1111_1111;
-    (0..pairs_count).for_each(|_| {
-        a = generator_next(a, factor_a, product, multiple_a);
-        b = generator_next(b, factor_b, product, multiple_b);
-
-        if generator_match(a, b, lowest_16_bits) {
-            count += 1;
-        }
-    });
-
-    count
+) -> usize {
+    judge_final_count(
+        input,
+        factor_a,
+        factor_b,
+        multiple_a,
+        multiple_b,
+        product,
+        pairs_count,
+    )
 }
 
 fn generator_next(current: u64, factor: u64, product: u64, multiple: u64) -> u64 {
@@ -98,8 +82,27 @@ fn generator_next(current: u64, factor: u64, product: u64, multiple: u64) -> u64
     candidate
 }
 
-fn generator_match(a: u64, b: u64, filter: u64) -> bool {
-    a & filter == b & filter
+fn judge_final_count(
+    input: &str,
+    factor_a: u64,
+    factor_b: u64,
+    multiple_a: u64,
+    multiple_b: u64,
+    product: u64,
+    pairs_count: u64,
+) -> usize {
+    let (mut a, mut b) = parse_seeds(input);
+    (0..pairs_count)
+        .map(|_| {
+            a = generator_next(a, factor_a, product, multiple_a);
+            b = generator_next(b, factor_b, product, multiple_b);
+            (a, b)
+        })
+        .filter(|&(a, b)| {
+            let tail = 0b1111_1111_1111_1111;
+            a & tail == b & tail
+        })
+        .count()
 }
 
 fn parse_seeds(input: &str) -> (u64, u64) {
