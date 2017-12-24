@@ -1,7 +1,6 @@
 extern crate failure;
 
 use failure::Error;
-use std::collections::HashMap;
 use std::collections::VecDeque;
 use std::fs::File;
 use std::io::Read;
@@ -64,23 +63,22 @@ struct Cpu<'a> {
     rcv: i64,
     instructions: &'a [Vec<&'a str>],
     snd: VecDeque<i64>,
-    registers: HashMap<&'a str, i64>,
+    registers: [i64; 26],
 }
 
 impl<'a> Cpu<'a> {
-    fn new(id: usize, instructions: &'a [Vec<&'a str>]) -> Cpu {
-        let mut registers = HashMap::new();
-        registers.insert("p", id as i64);
-
-        Cpu {
+    fn new(id: i64, instructions: &'a [Vec<&'a str>]) -> Cpu {
+        let mut cpu = Cpu {
             ip: 0,
             lock: false,
             snd_count: 0,
             rcv: 0,
             instructions,
             snd: VecDeque::new(),
-            registers,
-        }
+            registers: [0; 26],
+        };
+        cpu.set_register(parse_regrister("p"), id);
+        cpu
     }
 
     fn next_a(&mut self) {
@@ -93,7 +91,11 @@ impl<'a> Cpu<'a> {
         let instruction = &self.instructions[self.ip as usize];
 
         match instruction[0] {
-            "snd" => self.snd.push_back(self.registers[&instruction[1]]),
+            "snd" => {
+                let r = parse_regrister(instruction[1]);
+                let v = self.get_register(r);
+                self.snd.push_back(v);
+            }
             "rcv" => {
                 if self.eval(instruction[1]) == 0 {
                     return;
@@ -128,7 +130,7 @@ impl<'a> Cpu<'a> {
                 if let Some(val) = other_queue.pop_front() {
                     self.lock = false;
                     self.rcv = val;
-                    *self.registers.entry(instruction[1]).or_insert(0) = self.rcv;
+                    self.set_register(parse_regrister(instruction[1]), val);
                 } else {
                     self.lock = true;
                 }
@@ -142,21 +144,26 @@ impl<'a> Cpu<'a> {
 
         match instruction[0] {
             "set" => {
-                let r = self.eval(instruction[2]);
-                *self.registers.entry(instruction[1]).or_insert(0) = r;
+                let r = parse_regrister(instruction[1]);
+                let v = self.eval(instruction[2]);
+                self.set_register(r, v);
             }
             "add" => {
-                let r = self.eval(instruction[2]);
-                *self.registers.entry(instruction[1]).or_insert(0) += r;
+                let r = parse_regrister(instruction[1]);
+                let v = self.eval(instruction[2]) + self.get_register(r);
+                self.set_register(r, v);
             }
             "mul" => {
-                let r = self.eval(instruction[2]);
-                *self.registers.entry(instruction[1]).or_insert(0) *= r;
+                let r = parse_regrister(instruction[1]);
+                let v = self.eval(instruction[2]) * self.get_register(r);
+                self.set_register(r, v);
             }
             "mod" => {
-                let r = self.eval(instruction[2]);
-                if r != 0 {
-                    *self.registers.entry(instruction[1]).or_insert(0) %= r;
+                let v = self.eval(instruction[2]);
+                if v != 0 {
+                    let v = self.eval(instruction[1]) % v;
+                    let r = parse_regrister(instruction[1]);
+                    self.set_register(r, v);
                 }
             }
             _ => {}
@@ -178,18 +185,30 @@ impl<'a> Cpu<'a> {
             op => eprintln!("Unknown instruction: {}", op),
         };
 
-        if self.ip == self.instructions.len() {
+        if self.ip >= self.instructions.len() {
             self.lock = true;
         }
     }
 
-    fn eval(&mut self, thing: &'a str) -> i64 {
+    fn eval(&self, thing: &str) -> i64 {
         if let Ok(value) = thing.parse() {
             value
         } else {
-            *self.registers.entry(thing).or_insert(0)
+            self.get_register(parse_regrister(thing))
         }
     }
+
+    fn get_register(&self, r: usize) -> i64 {
+        self.registers[r]
+    }
+
+    fn set_register(&mut self, r: usize, value: i64) {
+        self.registers[r] = value;
+    }
+}
+
+fn parse_regrister(r: &str) -> usize {
+    usize::from(r.as_bytes()[0] - b'a')
 }
 
 #[cfg(test)]
