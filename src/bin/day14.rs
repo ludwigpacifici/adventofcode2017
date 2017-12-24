@@ -29,25 +29,22 @@ fn run() -> Result<(), Error> {
     Ok(())
 }
 
-fn run_a(input: &str, disk_size: usize) -> u32 {
-    let mut used_count = 0;
-
-    for i in 0..disk_size {
-        let input = format!("{}-{}", input, i);
-        used_count += knot_hash(&input)
-            .to_ascii_lowercase()
-            .chars()
-            .map(|c| match c {
-                '1' | '2' | '4' | '8' => 1,
-                '3' | '5' | '6' | '9' | 'a' | 'c' => 2,
-                '7' | 'b' | 'd' | 'e' => 3,
-                'f' => 4,
-                _ => 0,
-            })
-            .sum::<u32>();
-    }
-
-    used_count
+fn run_a(input: &str, disk_size: usize) -> usize {
+    (0..disk_size)
+        .map(|i| {
+            knot_hash(&format!("{}-{}", input, i))
+                .to_ascii_lowercase()
+                .chars()
+                .map(|c| match c {
+                    '1' | '2' | '4' | '8' => 1,
+                    '3' | '5' | '6' | '9' | 'a' | 'c' => 2,
+                    '7' | 'b' | 'd' | 'e' => 3,
+                    'f' => 4,
+                    _ => 0,
+                })
+                .sum::<usize>()
+        })
+        .sum()
 }
 
 fn run_b(input: &str, disk_size: usize) -> u32 {
