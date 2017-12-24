@@ -64,13 +64,13 @@ struct Cpu<'a> {
     rcv: i64,
     instructions: &'a [Vec<&'a str>],
     snd: VecDeque<i64>,
-    heap: HashMap<&'a str, i64>,
+    registers: HashMap<&'a str, i64>,
 }
 
 impl<'a> Cpu<'a> {
     fn new(id: usize, instructions: &'a [Vec<&'a str>]) -> Cpu {
-        let mut heap = HashMap::new();
-        heap.insert("p", id as i64);
+        let mut registers = HashMap::new();
+        registers.insert("p", id as i64);
 
         Cpu {
             ip: 0,
@@ -79,7 +79,7 @@ impl<'a> Cpu<'a> {
             rcv: 0,
             instructions,
             snd: VecDeque::new(),
-            heap,
+            registers,
         }
     }
 
@@ -93,7 +93,7 @@ impl<'a> Cpu<'a> {
         let instruction = &self.instructions[self.ip as usize];
 
         match instruction[0] {
-            "snd" => self.snd.push_back(self.heap[&instruction[1]]),
+            "snd" => self.snd.push_back(self.registers[&instruction[1]]),
             "rcv" => {
                 if self.eval(instruction[1]) == 0 {
                     return;
@@ -128,7 +128,7 @@ impl<'a> Cpu<'a> {
                 if let Some(val) = other_queue.pop_front() {
                     self.lock = false;
                     self.rcv = val;
-                    *self.heap.entry(instruction[1]).or_insert(0) = self.rcv;
+                    *self.registers.entry(instruction[1]).or_insert(0) = self.rcv;
                 } else {
                     self.lock = true;
                 }
@@ -143,20 +143,20 @@ impl<'a> Cpu<'a> {
         match instruction[0] {
             "set" => {
                 let r = self.eval(instruction[2]);
-                *self.heap.entry(instruction[1]).or_insert(0) = r;
+                *self.registers.entry(instruction[1]).or_insert(0) = r;
             }
             "add" => {
                 let r = self.eval(instruction[2]);
-                *self.heap.entry(instruction[1]).or_insert(0) += r;
+                *self.registers.entry(instruction[1]).or_insert(0) += r;
             }
             "mul" => {
                 let r = self.eval(instruction[2]);
-                *self.heap.entry(instruction[1]).or_insert(0) *= r;
+                *self.registers.entry(instruction[1]).or_insert(0) *= r;
             }
             "mod" => {
                 let r = self.eval(instruction[2]);
                 if r != 0 {
-                    *self.heap.entry(instruction[1]).or_insert(0) %= r;
+                    *self.registers.entry(instruction[1]).or_insert(0) %= r;
                 }
             }
             _ => {}
@@ -187,7 +187,7 @@ impl<'a> Cpu<'a> {
         if let Ok(value) = thing.parse() {
             value
         } else {
-            *self.heap.entry(thing).or_insert(0)
+            *self.registers.entry(thing).or_insert(0)
         }
     }
 }
