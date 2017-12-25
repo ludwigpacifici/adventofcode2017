@@ -64,7 +64,7 @@ fn run_b() -> usize {
     //         }
     //         d += 1;
     //         g = d - b;
-    //         if g == 0 { // for d in (e..b)
+    //         if g == 0 { // for d in (2..b)
     //             break;
     //         }
     //     }
@@ -72,7 +72,7 @@ fn run_b() -> usize {
     //         h += 1;
     //     }
     //     g = b - c;
-    //     if g == 0 { // for i in (b..c + 17)
+    //     if g == 0 { // for i in (b..(c+1) + 17)
     //         return h;
     //     }
     //     b += 17;
