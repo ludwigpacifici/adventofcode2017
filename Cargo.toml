@@ -7,3 +7,4 @@ authors = ["Ludwig PACIFICI <ludwig@lud.cc>"]
 failure = "*"
 lazy_static = "*"
 regex = "*"
+primal = "*"
