@@ -41,7 +41,6 @@ fn run() -> Result<(), Error> {
 
 fn fractal_art(input: &str, seed: &str, iterations: usize) -> usize {
     let mut enhancement_rules: HashMap<_, _> = HashMap::new();
-
     input.lines().for_each(|l| {
         let mut it = l.split(" => ").map(|l| l.replace('/', "").into_bytes());
         let k = it.next().unwrap();
@@ -59,7 +58,7 @@ fn fractal_art(input: &str, seed: &str, iterations: usize) -> usize {
     for _ in 0..iterations {
         let next_frame_size = next_frame_size(frame_size, chunk);
         let mut hidden_frame = vec![0; next_frame_size * next_frame_size];
-        println!("{}", next_frame_size);
+
         for block in generate_chunk_positions(frame_size, chunk) {
             let view: Vec<_> = (0..chunk)
                 .cartesian_product(0..chunk)
