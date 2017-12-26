@@ -4,7 +4,9 @@ version = "0.1.0"
 authors = ["Ludwig PACIFICI <ludwig@lud.cc>"]
 
 [dependencies]
+bytecount = "*"
 failure = "*"
+itertools = "*"
 lazy_static = "*"
 primal = "*"
 regex = "*"
