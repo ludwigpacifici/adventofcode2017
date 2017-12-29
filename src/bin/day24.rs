@@ -1,4 +1,3 @@
-#![feature(nll)]
 #![feature(match_default_bindings)]
 
 extern crate failure;
